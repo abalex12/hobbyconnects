@@ -1,0 +1,214 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Enchanted Login - Hobby{% endblock %}
+
+{% block content %}
+<div class="magical-login-container">
+    <div class="magical-login-card">
+        <div class="magical-login-body">
+            {% if messages %}
+                <div class="magical-alert-messages">
+                    {% for message in messages %}
+                        <div class="magical-alert {% if message.tags %}magical-alert-{{ message.tags }}{% endif %}">
+                            <span class="magical-message">{{ message }}</span>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            <form method="post" class="magical-login-form">
+                {% csrf_token %}
+                <div class="magical-form-group">
+                    <input type="text" id="{{ form.username.id_for_label }}" name="{{ form.username.name }}" required placeholder=" ">
+                    <label for="{{ form.username.id_for_label }}" class="magical-label">
+                        <i class="fas fa-wand-sparkles"></i> Wizard Name
+                    </label>
+                </div>
+                <div class="magical-form-group">
+                    <input type="password" id="{{ form.password.id_for_label }}" name="{{ form.password.name }}" required placeholder=" ">
+                    <label for="{{ form.password.id_for_label }}" class="magical-label">
+                        <i class="fas fa-key"></i> Secret Spell
+                    </label>
+                </div>
+                <button type="submit" class="magical-btn-login">
+                    Enter the Realm <i class="fas fa-door-open"></i>
+                </button>
+            </form>
+        </div>
+        <div class="magical-login-footer">
+            <p>New to the magical world? <a href="{% url 'Users:signup' %}" class="magical-link">Enroll in Wizardry</a></p>
+            <p><a href="#" class="magical-link">Lost your spellbook?</a></p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    @keyframes sparkle {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
+    body {
+        background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+        background-size: 400% 400%;
+        animation: sparkle 15s ease infinite;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        font-family: 'Cinzel', serif;
+    }
+
+    .magical-login-container {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 40px 20px;
+    }
+
+    .magical-login-card {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 15px;
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        overflow: hidden;
+        width: 100%;
+    }
+
+    .magical-login-body {
+        padding: 40px;
+    }
+
+    .magical-form-group {
+        position: relative;
+        margin-bottom: 25px;
+    }
+
+    .magical-label {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #000000;
+        text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+        transition: all 0.3s ease;
+        pointer-events: none;
+    }
+
+    .magical-login-form .magical-form-group input {
+        width: 100%;
+        padding: 15px 15px 15px 45px;
+        border: none;
+        border-radius: 5px;
+        background: rgba(255, 255, 255, 0.2);
+        color: #000000;
+        font-size: 16px;
+        transition: all 0.3s ease;
+    }
+
+    .magical-login-form .magical-form-group input:focus,
+    .magical-login-form .magical-form-group input:not(:placeholder-shown) {
+        background: rgba(255, 255, 255, 0.3);
+        box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+    }
+
+    .magical-login-form .magical-form-group input:focus + .magical-label,
+    .magical-login-form .magical-form-group input:not(:placeholder-shown) + .magical-label {
+        top: -10px;
+        left: 10px;
+        font-size: 12px;
+        background: rgba(255, 255, 255, 0.2);
+        padding: 2px 5px;
+        border-radius: 3px;
+    }
+
+    .magical-btn-login {
+        width: 100%;
+        padding: 15px;
+        border: none;
+        border-radius: 5px;
+        background: linear-gradient(45deg, #ff00cc, #3333ff);
+        color: #000000;
+        font-size: 18px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .magical-btn-login:hover {
+        background: linear-gradient(45deg, #3333ff, #ff00cc);
+        transform: translateY(-3px);
+        box-shadow: 0 7px 14px rgba(50, 50, 93, .1), 0 3px 6px rgba(0, 0, 0, .08);
+    }
+
+    .magical-login-footer {
+        text-align: center;
+        padding: 20px;
+        background: rgba(255, 255, 255, 0.1);
+        color: #000000;
+    }
+
+    .magical-link {
+        color: #000000;
+        text-decoration: none;
+        position: relative;
+    }
+
+    .magical-link::after {
+        content: '';
+        position: absolute;
+        width: 100%;
+        height: 2px;
+        bottom: -2px;
+        left: 0;
+        background: linear-gradient(90deg, transparent, #000000, transparent);
+        transition: width 0.3s ease;
+    }
+
+    .magical-link:hover::after {
+        width: 0;
+    }
+
+    .magical-alert-messages {
+        margin-bottom: 20px;
+    }
+
+    .magical-alert {
+        padding: 15px;
+        margin-bottom: 10px;
+        border-radius: 5px;
+        font-size: 14px;
+        text-align: center;
+        background: rgba(255, 255, 255, 0.2);
+        color: #000000;
+        box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+    }
+
+    .magical-alert-error {
+        background: rgba(255, 0, 0, 0.2);
+    }
+
+    .magical-alert-success {
+        background: rgba(0, 255, 0, 0.2);
+    }
+
+    .magical-message {
+        display: inline-block;
+        animation: float 3s ease-in-out infinite;
+    }
+
+    @keyframes float {
+        0% { transform: translateY(0px); }
+        50% { transform: translateY(-10px); }
+        100% { transform: translateY(0px); }
+    }
+</style>
+{% endblock %}

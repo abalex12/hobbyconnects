@@ -1,0 +1,155 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Confessions{% endblock %}
+
+{% block extra_css %}
+<style>
+    .confession-card {
+        border-left: 4px solid #007bff;
+        background-color: white;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    }
+    .confession-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    }
+    .like-btn {
+        cursor: pointer;
+        transition: color 0.3s ease-in-out, transform 0.2s ease-in-out;
+    }
+    .like-btn:hover {
+        color: #dc3545;
+        transform: scale(1.1);
+    }
+    .confession-text {
+        font-size: 1.1rem;
+        line-height: 1.6;
+    }
+    .comment-section {
+        max-height: 200px;
+        overflow-y: auto;
+    }
+    .comment-form {
+        transition: all 0.3s ease-in-out;
+    }
+    .comment-form:focus-within {
+        transform: scale(1.02);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <h1 class="display-4 text-center mb-5">
+        <i class="fas fa-comment-alt me-3 text-primary"></i>Confessions
+    </h1>
+    <p class="lead text-center mb-5">Share your secrets, find your solace</p>
+
+    <div class="row">
+        {% for confession in confessions %}
+            <div class="col-md-6 mb-4">
+                <div class="card confession-card">
+                    <div class="card-body">
+                        <p class="card-text confession-text">{{ confession.text }}</p>
+                        <hr>
+                        <p class="card-text">
+                            <small class="text-muted">
+                                <i class="fas fa-user me-2"></i>
+                                {% if confession.is_anonymous %}Anonymous{% else %}{{ confession.author.username }}{% endif %}
+                                <br>
+                                <i class="far fa-clock me-2"></i>{{ confession.created_at|date:"F d, Y H:i" }}
+                            </small>
+                        </p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="like-btn" data-confession-id="{{ confession.id }}" onclick="likeConfession(this)">
+                                <i class="far fa-heart me-1"></i><span class="likes-count">{{ confession.likes }}</span> Likes
+                            </span>
+                            <button class="btn btn-sm btn-outline-primary" onclick="toggleComments('{{ confession.id }}')">
+                                <i class="far fa-comment me-1"></i>Comments
+                            </button>
+                        </div>
+                        <div id="comments-{{ confession.id }}" class="mt-3 comment-section" style="display: none;">
+                            <h6>Comments:</h6>
+                            <ul class="list-unstyled">
+                                {% for comment in confession.comments.all %}
+                                    <li class="mb-2">
+                                        <strong>{{ comment.author.username }}:</strong> {{ comment.text }}
+                                    </li>
+                                {% empty %}
+                                    <li>No comments yet.</li>
+                                {% endfor %}
+                            </ul>
+                            <form class="comment-form" onsubmit="addComment(event, '{{ confession.id }}')">
+                                <div class="input-group">
+                                    <input type="text" name="comment" class="form-control" placeholder="Add a comment..." required>
+                                    <button class="btn btn-outline-secondary" type="submit">Post</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <div class="col-12">
+                <div class="alert alert-info" role="alert">
+                    <i class="fas fa-info-circle me-2"></i>No confessions yet. Be the first to share!
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function likeConfession(element) {
+        const confessionId = element.dataset.confessionId;
+        // Implement AJAX call to like confession
+        console.log('Liked confession:', confessionId);
+        
+        // Animate the like button
+        element.classList.add('animate__animated', 'animate__heartBeat');
+        setTimeout(() => {
+            element.classList.remove('animate__animated', 'animate__heartBeat');
+        }, 1000);
+    }
+
+    function toggleComments(confessionId) {
+        const commentsSection = document.getElementById(`comments-${confessionId}`);
+        if (commentsSection.style.display === 'none') {
+            commentsSection.style.display = 'block';
+            commentsSection.classList.add('animate__animated', 'animate__fadeIn');
+        } else {
+            commentsSection.classList.add('animate__animated', 'animate__fadeOut');
+            setTimeout(() => {
+                commentsSection.style.display = 'none';
+                commentsSection.classList.remove('animate__animated', 'animate__fadeOut');
+            }, 500);
+        }
+    }
+
+    function addComment(event, confessionId) {
+        event.preventDefault();
+        // Implement AJAX call to add comment
+        console.log('Added comment to confession:', confessionId);
+        
+        // Clear the input field and show a success message
+        const form = event.target;
+        const input = form.querySelector('input[name="comment"]');
+        const successMessage = document.createElement('div');
+        successMessage.textContent = 'Comment added successfully!';
+        successMessage.className = 'alert alert-success mt-2 animate__animated animate__fadeIn';
+        form.appendChild(successMessage);
+        input.value = '';
+        
+        setTimeout(() => {
+            successMessage.classList.add('animate__fadeOut');
+            setTimeout(() => {
+                form.removeChild(successMessage);
+            }, 500);
+        }, 2000);
+    }
+</script>
+{% endblock %}

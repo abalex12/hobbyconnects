@@ -1,0 +1,143 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Hobby Connect{% endblock %}</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;700&display=swap" rel="stylesheet">
+    {% block extra_css %}{% endblock %}
+    <style>
+        body {
+            background: linear-gradient(-45deg, #f5a742, #e74c3c, #3498db, #2ecc71);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+            font-family: 'Raleway', sans-serif;
+        }
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .navbar {
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+        .navbar-brand, .nav-link {
+            color: #fff !important;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+        .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='30' height='30' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255, 255, 255, 1)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+        }
+        .navbar-toggler {
+            border-color: rgba(255,255,255,0.5);
+        }
+        .notification-badge {
+            position: absolute;
+            top: 0;
+            right: 0;
+            padding: 0.25rem 0.5rem;
+            border-radius: 50%;
+            background-color: #e74c3c;
+            color: white;
+            font-size: 0.75rem;
+        }
+        .footer {
+            background-color: rgba(0, 0, 0, 0.5);
+            color: #fff;
+            padding: 1rem 0;
+        }
+        .custom-btn {
+            background: linear-gradient(45deg, #3498db, #2ecc71);
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+        .custom-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg">
+            <div class="container">
+                <a href="{% url 'Users:home' %}" class="navbar-brand"><i class="fas fa-home mr-2"></i>Hobby Connect</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ml-auto">
+                        {% if user.is_authenticated %}
+                        <li class="nav-item"><a href="{% url 'Users:create_confession' %}" class="nav-link custom-btn"><i class="fas fa-pen mr-1"></i>Write a Post</a></li>
+                        <li class="nav-item"><a href="{% url 'Users:userlist' %}" class="nav-link"><i class="fas fa-users mr-1"></i>User List</a></li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="notificationDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-bell mr-1"></i>Notifications
+                                {% if notifications or crush_requests %}
+                                    <span class="notification-badge">{{ notifications|length }}</span>
+                                {% endif %}
+                            </a>
+                            <div class="dropdown-menu notification-dropdown" aria-labelledby="notificationDropdown">
+                                {% for notification in notifications %}
+                                    <div class="notification-item">
+                                        <p class="mb-1">{{ notification.text }}</p>
+                                        <small class="text-muted"><i class="far fa-clock mr-1"></i>{{ notification.created_at|date:"F d, Y H:i" }}</small>
+                                    </div>
+                                {% endfor %}
+                                {% for request in crush_requests %}
+                                    <div class="notification-item">
+                                        {% if request.sender == request.user %}
+                                            <p class="mb-1">You sent a friend request to <strong>{{ request.receiver.username }}</strong></p>
+                                        {% else %}
+                                            <p class="mb-1"><strong>{{ request.sender.username }}</strong> sent you a friend request</p>
+                                        {% endif %}
+                                        <small class="text-muted"><i class="far fa-calendar mr-1"></i>{{ request.date_sent|date:"F d, Y" }}</small>
+                                    </div>
+                                {% endfor %}
+                                {% if not notifications and not crush_requests %}
+                                    <div class="notification-item">
+                                        <p class="mb-0">No new notifications</p>
+                                    </div>
+                                {% endif %}
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item text-center" href="{% url 'Users:notifications' %}">View All Notifications</a>
+                            </div>
+                        </li>
+                            <li class="nav-item"><a href="{% url 'Users:user_profile' user_id=user.id %}" class="nav-link"><i class="fas fa-user mr-1"></i>My Profile</a></li>
+                            <li class="nav-item"><a href="{% url 'Users:edit_profile' %}" class="nav-link"><i class="fas fa-edit mr-1"></i>Edit Profile</a></li>
+                            <li class="nav-item"><a href="{% url 'Users:logout' %}" class="nav-link"><i class="fas fa-sign-out-alt mr-1"></i>Logout</a></li>
+                        {% else %}
+                            <li class="nav-item"><a href="{% url 'Users:login' %}" class="nav-link custom-btn"><i class="fas fa-sign-in-alt mr-1"></i>Login</a></li>
+                            <li class="nav-item"><a href="{% url 'Users:signup' %}" class="nav-link custom-btn"><i class="fas fa-user-plus mr-1"></i>Sign Up</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; {% now "Y" %} Hobby Connect. All rights reserved. | <a href="#" class="text-white">Privacy Policy</a> | <a href="#" class="text-white">Terms of Service</a></p>
+        </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

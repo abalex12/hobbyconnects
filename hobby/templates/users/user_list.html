@@ -1,0 +1,95 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% block content %}
+<div class="container mt-5">
+    {% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+        <div class="alert alert-dismissible fade show" role="alert" style="background-color: white; color: red; text-align: center;">
+            {{ message }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <h1 class="text-center mb-4">User Directory</h1>
+
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        {% for user in users %}
+            <div class="col">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body text-center">
+                        <img src="{% static 'images/default_avatar.png' %}" alt="{{ user.username }}" class="rounded-circle mb-3" style="width: 100px; height: 100px; object-fit: cover;">
+                        <h5 class="card-title font-weight-bold">{{ user.username }}</h5>
+                        <p class="card-text text-muted">
+                            {% if user.bio %}
+                                {{ user.bio|truncatechars:100 }}
+                            {% else %}
+                                No bio available
+                            {% endif %}
+                        </p>
+                        <style>
+                            .user-actions {
+                                display: flex;
+                                justify-content: space-around;
+                            }
+                            .user-action {
+                                position: relative;
+                                display: inline-block;
+                                padding: 10px;
+                                border-radius: 50%;
+                                transition: all 0.3s ease;
+                            }
+                            .user-action i {
+                                font-size: 24px;
+                            }
+                            .user-action:hover {
+                                background-color: rgba(0,0,0,0.1);
+                            }
+                            .user-action::after {
+                                content: attr(data-tooltip);
+                                position: absolute;
+                                bottom: 100%;
+                                left: 50%;
+                                transform: translateX(-50%);
+                                background-color: #333;
+                                color: white;
+                                padding: 5px 10px;
+                                border-radius: 5px;
+                                font-size: 14px;
+                                white-space: nowrap;
+                                opacity: 0;
+                                transition: opacity 0.3s;
+                                pointer-events: none;
+                            }
+                            .user-action:hover::after {
+                                opacity: 1;
+                            }
+                        </style>
+                        <div class="user-actions mt-3">
+                            <a href="{% url 'Users:send_crush_request' receiver_id=user.id %}" class="user-action" data-tooltip="Send Crush Request">
+                                <i class="fas fa-heart text-danger"></i>
+                            </a>
+                            <a href="{% url 'Users:send_message' receiver_id=user.id %}" class="user-action" data-tooltip="Send Message">
+                                <i class="fas fa-envelope text-primary"></i>
+                            </a>
+                            <a href="{% url 'Users:user_profile' user_id=user.id %}" class="user-action" data-tooltip="View Profile">
+                                <i class="fas fa-user text-success"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <div class="col-12">
+                <div class="alert alert-info" role="alert">
+                    No users found.
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

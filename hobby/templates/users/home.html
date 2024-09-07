@@ -1,0 +1,130 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% block content %}
+    <main class="container">
+        <div class="welcome-container">
+            <h1 class="welcome-text">
+                Welcome, <span class="username">{{ request.user.username }}</span>!
+            </h1>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-8 col-md-12">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <i class="fas fa-comment-alt mr-2"></i>Recent Confessions
+                    </div>
+                    <div class="card-body">
+                        {% for confession in recent_confessions %}
+                            <div class="confession">
+                                <p class="mb-1">{{ confession.text|truncatewords:20 }}</p>
+                                <small class="text-muted">
+                                    <i class="far fa-clock mr-1"></i>{{ confession.created_at|date:"F d, Y H:i" }}
+                                    {% if not confession.is_anonymous %}
+                                        | <i class="fas fa-user mr-1"></i><a href="{% url 'Users:user_profile' user_id=confession.author.id %}">{{ confession.author.username }}</a>
+                                    {% else %}
+                                        | <i class="fas fa-user mr-1"></i><a href="#">anonymous</a>
+                                    {% endif %}
+                                </small>
+                            </div>
+                        {% empty %}
+                            <p class="text-center">No recent confessions.</p>
+                        {% endfor %}
+                        <div class="text-center mt-3">
+                            <a href="{% url 'Users:confession_list' %}" class="btn btn-primary">
+                                <i class="fas fa-list mr-1"></i>View All Confessions
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <i class="fas fa-users mr-2"></i>Matched Users
+                    </div>
+                    <div class="card-body">
+                        {% for user in matched_users %}
+                            <div class="matched-user">
+                                <p class="mb-1"><strong>{{ user.username }}</strong>  <span><a href="{% url 'Users:conversation' receiver_id=user.id %}" class="btn btn-sm btn-primary">
+                                    <i class="fas fa-comments mr-1"></i>
+                                </a></span></p>
+                                
+                            </div>
+                        {% empty %}
+                            <p class="text-center">No matched users yet.</p>
+                        {% endfor %}
+                        <div class="text-center mt-3">
+                            <a href="{% url 'Users:matched' %}" class="btn btn-primary">
+                                <i class="fas fa-list mr-1"></i>View All Matched Users
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-12">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <i class="fas fa-heart mr-2"></i>Crush Requests
+                    </div>
+                    <div class="card-body">
+                        {% for request in crush_requests %}
+                            <div class="crush-request">
+                                {% if request.sender == request.user %}
+                                    <p class="mb-1">You sent a request to <strong>{{ request.receiver.username }}</strong></p>
+                                {% else %}
+                                    <p class="mb-1"><strong>{{ request.sender.username }}</strong> sent you a request</p>
+                                    <a href="{% url 'Users:accept_crush_request' request_id=request.id %}" class="btn btn-sm btn-success">Accept</a>
+                                    <a href="{% url 'Users:deny_crush_request' request_id=request.id %}" class="btn btn-sm btn-success">Deny</a>                                    {% endif %}
+                                <small class="text-muted"><i class="far fa-calendar-alt mr-1"></i>{{ request.date_sent|date:"F d, Y" }}</small>
+                            </div>
+                        {% empty %}
+                            <p class="text-center">No crush requests.</p>
+                        {% endfor %}
+                        <div class="text-center mt-3">
+                            <a href="{% url 'Users:crush_request_list' %}" class="btn btn-primary">
+                                <i class="fas fa-list mr-1"></i>View All Crush Requests
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fas fa-bell mr-2"></i>Notifications
+                    </div>
+                    <div class="card-body">
+                        {% for notification in notifications %}
+                            <div class="notification">
+                                <p class="mb-1">{{ notification.text }}</p>
+                                <small class="text-muted"><i class="far fa-clock mr-1"></i>{{ notification.created_at|date:"F d, Y H:i" }}</small>
+                            </div>
+                        {% empty %}
+                            <p class="text-center">No new notifications.</p>
+                        {% endfor %}
+                        <a href="{% url 'Users:notifications' %}" class="btn btn-primary btn-block mt-3"><i class="fas fa-eye mr-1"></i>View All Notifications</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+{% endblock %}
+
+{% block extra_js %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Page loaded');
+            // Add smooth scrolling to all links
+            $("a").on('click', function(event) {
+                if (this.hash !== "") {
+                    event.preventDefault();
+                    var hash = this.hash;
+                    $('html, body').animate({
+                        scrollTop: $(hash).offset().top
+                    }, 800, function(){
+                        window.location.hash = hash;
+                    });
+                }
+            });
+        });
+    </script>
+{% endblock %}

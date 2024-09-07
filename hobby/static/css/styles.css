@@ -1,0 +1,122 @@
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f0f2f5;
+    color: #333;
+}
+.navbar {
+    background-color: #4267B2;
+    box-shadow: 0 2px 4px rgba(0,0,0,.1);
+}
+.navbar-brand, .nav-link {
+    color: #ffffff !important;
+    font-weight: 500;
+}
+.navbar-brand:hover, .nav-link:hover {
+    color: #e0e0e0 !important;
+}
+.container {
+    margin-top: 20px;
+}
+.card {
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,.1);
+    transition: transform 0.3s ease;
+    margin-bottom: 20px;
+}
+.card:hover {
+    transform: translateY(-5px);
+}
+.card-header {
+    background-color: #4267B2;
+    color: white;
+    font-weight: bold;
+}
+.confession, .crush-request, .notification {
+    background-color: #ffffff;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,.1);
+}
+.footer {
+    background-color: #4267B2;
+    color: #ffffff;
+    padding: 20px 0;
+    text-align: center;
+    width: 100%;
+    margin-top: auto;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+html {
+    height: 100%;
+}
+.btn-primary {
+    background-color: #4267B2;
+    border-color: #4267B2;
+}
+.btn-primary:hover {
+    background-color: #365899;
+    border-color: #365899;
+}
+.notification-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    padding: 3px 5px;
+    border-radius: 50%;
+    background-color: red;
+    color: white;
+    font-size: 0.7em;
+}
+.notification-dropdown {
+    min-width: 300px;
+    padding: 0;
+}
+.notification-item {
+    padding: 10px;
+    border-bottom: 1px solid #e0e0e0;
+}
+.notification-item:last-child {
+    border-bottom: none;
+}
+.welcome-container {
+    background: linear-gradient(135deg, #6e8efb, #a777e3);
+    padding: 1.5rem;
+    border-radius: 15px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    margin: 1rem 0;
+}
+.welcome-text {
+    font-size: 2rem;
+    color: #ffffff;
+    text-align: center;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+.username {
+    font-weight: bold;
+    color: #ffd700;
+}
+@media (max-width: 768px) {
+    .navbar-nav {
+        flex-direction: column;
+    }
+    .nav-item {
+        margin-bottom: 10px;
+    }
+    .welcome-text {
+        font-size: 1.5rem;
+    }
+    .card {
+        margin-bottom: 15px;
+    }
+    .notification-dropdown {
+        min-width: 100%;
+    }
+}

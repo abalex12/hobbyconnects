@@ -1,0 +1,164 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Notifications - Hobby{% endblock %}
+
+{% block content %}
+<main class="container mt-5 pt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card notification-card">
+                <div class="card-header bg-gradient-primary text-white sticky-top">
+                    <h2 class="mb-0"><i class="fas fa-bell mr-2 notification-icon"></i>Notifications</h2>
+                </div>
+                <div class="card-body notification-body">
+                    {% if notifications %}
+                        <ul class="list-group list-group-flush notification-list">
+                            {% for notification in notifications %}
+                                <li class="list-group-item notification-item {% if not notification.read %}unread{% endif %}">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div class="notification-content">
+                                            {% if notification.type == 'message' %}
+                                                <a href="{% url 'Users:conversation' receiver_id=notification.sender.id %}" class="notification-link">
+                                                    <p class="mb-1">{{ notification.text }}</p>
+                                                </a>
+                                            {% elif notification.type == 'crush_request' %}
+                                                <a href="{% url 'Users:user_profile' user_id=notification.sender.id %}" class="notification-link">
+                                                    <p class="mb-1">{{ notification.text }}</p>
+                                                </a>
+                                            {% else %}
+                                                <p class="mb-1">{{ notification.text }}</p>
+                                            {% endif %}
+                                            <small class="text-muted">{{ notification.created_at|date:"F d, Y H:i" }}</small>
+                                        </div>
+                                        {% if not notification.read %}
+                                            <span class="badge badge-pulse">New</span>
+                                        {% endif %}
+                                    </div>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <div class="text-center py-4 empty-notifications">
+                            <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                            <p class="lead">No notifications at the moment.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    body {
+        padding-top: 56px; /* Adjust this value based on your header height */
+    }
+
+    .notification-card {
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+
+    .notification-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+    }
+
+    .bg-gradient-primary {
+        background: linear-gradient(45deg, #4e54c8, #8f94fb);
+    }
+
+    .notification-icon {
+        animation: bell-ring 2s infinite;
+    }
+
+    @keyframes bell-ring {
+        0%, 100% { transform: rotate(0); }
+        10%, 30%, 50%, 70%, 90% { transform: rotate(-10deg); }
+        20%, 40%, 60%, 80% { transform: rotate(10deg); }
+    }
+
+    .notification-body {
+        max-height: calc(100vh - 200px);
+        overflow-y: auto;
+        scrollbar-width: thin;
+        scrollbar-color: #4e54c8 #f0f0f0;
+    }
+
+    .notification-body::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    .notification-body::-webkit-scrollbar-track {
+        background: #f0f0f0;
+    }
+
+    .notification-body::-webkit-scrollbar-thumb {
+        background-color: #4e54c8;
+        border-radius: 20px;
+    }
+
+    .notification-list {
+        padding: 0;
+    }
+
+    .notification-item {
+        border-left: 4px solid transparent;
+        transition: all 0.3s ease;
+    }
+
+    .notification-item:hover {
+        background-color: #f8f9fa;
+        transform: translateX(5px);
+    }
+
+    .notification-item.unread {
+        border-left-color: #4e54c8;
+        background-color: #e3f2fd;
+    }
+
+    .notification-link {
+        color: inherit;
+        text-decoration: none;
+    }
+
+    .notification-link:hover {
+        color: #4e54c8;
+    }
+
+    .badge-pulse {
+        background-color: #4e54c8;
+        color: white;
+        padding: 0.4em 0.6em;
+        border-radius: 50%;
+        animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+        0% { box-shadow: 0 0 0 0 rgba(78, 84, 200, 0.7); }
+        70% { box-shadow: 0 0 0 10px rgba(78, 84, 200, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(78, 84, 200, 0); }
+    }
+
+    .empty-notifications {
+        opacity: 0.7;
+        transition: all 0.3s ease;
+    }
+
+    .empty-notifications:hover {
+        opacity: 1;
+        transform: scale(1.05);
+    }
+
+    .sticky-top {
+        top: 56px; /* Adjust this value based on your header height */
+        z-index: 1020;
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Under Development{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 text-center">
+            <h1 class="display-4 mb-4">Oops! This page is under construction</h1>
+            <div class="mb-4">
+                <i class="fas fa-hard-hat fa-5x text-warning"></i>
+            </div>
+            <p class="lead mb-4">We're working hard to bring you something amazing. Please check back soon!</p>
+            <div class="progress mb-4" style="height: 25px;">
+                <div class="progress-bar progress-bar-striped progress-bar-animated bg-info" role="progressbar" style="width: 75%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">75% Complete</div>
+            </div>
+            <a href="{% url 'Users:home' %}" class="btn btn-primary btn-lg">
+                <i class="fas fa-home mr-2"></i>Return to Home
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-_l&69&pk^95i&je8i-=op(!zdcd39n+_xa=b2@_f)k93-z17f*
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1',"*"]
+ALLOWED_HOSTS = ['0.0.0.0',"hobbyconnects.onrender.com"]
 
 handler404 = 'Users.views.custom_404'
 # Application definition

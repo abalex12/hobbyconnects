@@ -29,6 +29,7 @@ ALLOWED_HOSTS = ['0.0.0.0',"hobbyconnects.onrender.com"]
 
 handler404 = 'Users.views.custom_404'
 # Application definition
+CSRF_TRUSTED_ORIGINS = ['https://hobbyconnects.onrender.com']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
